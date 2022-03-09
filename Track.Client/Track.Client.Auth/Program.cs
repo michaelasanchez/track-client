@@ -39,26 +39,34 @@ Console.WriteLine("[Connected to MQTT broker]");
 void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
 {
     var @event = new MqttEvent(e);
-    // handle message received
-    string message = Encoding.UTF8.GetString(e.Message);
-
-    var topic = new MqttTopic(e.Topic);
-
-    if (@event.Type == "app")
-    {
-        switch (@event.Target)
-        {
-            case "track":
-                ExecuteTrackRequest(@event);
-                break;
-        }
-    }
 
     Console.WriteLine($"[Message Received]: {@event.Topic} - {@event.Message}");
 
+    HandlePublishEvent(@event);
 }
 
-async void ExecuteTrackRequest(MqttEvent @event)
+async void HandlePublishEvent(MqttEvent @event)
+{
+    try
+    {
+        if (@event.Type == "app")
+        {
+            switch (@event.Target)
+            {
+                case "track":
+                    await ExecuteTrackRequest(@event);
+                    break;
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Message failed] {ex.Message}");
+    }
+
+}
+
+async Task ExecuteTrackRequest(MqttEvent @event)
 {
     TrackClient trackClient = new TrackClient(settings);
 
@@ -91,7 +99,20 @@ async void ExecuteTrackRequest(MqttEvent @event)
 
                 if (datasetIdIsValid)
                 {
-                    await trackClient.CreateRecordAsync(datasetId, payload);
+                    var response = await trackClient.CreateRecordAsync(datasetId, payload);
+
+                    if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        throw new Exception($"[Track Api] {content}");
+                    }
+
+                    string Topic = "arduino/ledControl";
+
+                    // publish a message with QoS 2
+                    client.Publish(Topic, Encoding.UTF8.GetBytes("1"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+
                 }
 
                 break;
