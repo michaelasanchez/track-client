@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Track.Broker", "Track.Client.Auth\Track.Broker.csproj", "{50A70D14-D04A-4EFA-AFE6-DFDCE38CFA4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Track.Broker", "Track.Client.Broker\Track.Broker.csproj", "{50A70D14-D04A-4EFA-AFE6-DFDCE38CFA4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Track.Broker.Test", "Track.Broker.Test\Track.Broker.Test.csproj", "{F5A2B350-8A87-4BBE-B608-0E0505ED3993}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Track.Broker.Test", "Track.Client.Broker.Test\Track.Broker.Test.csproj", "{F5A2B350-8A87-4BBE-B608-0E0505ED3993}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
